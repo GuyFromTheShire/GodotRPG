@@ -3,7 +3,7 @@ extends KinematicBody2D
 const ACCELERATION = 500
 const MAX_SPEED = 100
 const FRICTION = 1000
-const ROLL_SPEED = 125
+const ROLL_SPEED = 100
 
 enum {
 	MOVE,
@@ -13,7 +13,7 @@ enum {
 
 var state = MOVE
 var velocity = Vector2.ZERO
-var roll_vector = Vector2.DOWN
+var roll_vector = Vector2.LEFT
 
 onready var animationPlayer = $AnimationPlayer
 onready var animationTree = $AnimationTree
@@ -57,12 +57,12 @@ func move_state(delta):
 	if Input.is_action_just_pressed("attack"):
 		state = ATTACK
 		
-func roll_state(delta):
-	velocity = roll_vector * MAX_SPEED * ROLL_SPEED
+func roll_state(_delta):
+	velocity = roll_vector * ROLL_SPEED
 	animationState.travel("Roll")
 	move()
 	
-func attack_state(delta):
+func attack_state(_delta):
 	velocity = Vector2.ZERO
 	animationState.travel("Attack")
 	
@@ -70,7 +70,8 @@ func move():
 	velocity = move_and_slide(velocity)
 	
 func roll_animation_finished():
-	state = MOVE 
+	state = MOVE
+	velocity = velocity * 0.8
 	
 func attack_animation_finished():
 	state = MOVE
